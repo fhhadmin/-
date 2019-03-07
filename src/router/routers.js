@@ -80,6 +80,38 @@ export default [
     ]
   },
   {
+    path: '/materialList',
+    name: 'materialList',
+    meta: {
+      // access: ['yonghu_g'],
+      icon: '_gongren',
+      title: '材料用料表'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'material',
+        name: 'material',
+        meta: {
+          // access: ['renyuanxinxi_g'],
+          icon: '_gongren',
+          title: '施工材料表'
+        },
+        component: () => import('@/view/materialList/materialList.vue')
+      }
+    ]
+  },
+  // {
+  //   path: '/storeManagement',
+  //   name: 'storeManagement',
+  //   meta: {
+  //     // access: ['yonghu_g'],
+  //     icon: '_gongren',
+  //     title: '仓库管理'
+  //   },
+  //   component: () => import('@/view/storeManagement/storeManagement.vue')
+  // },
+  {
     path: '/401',
     name: 'error_401',
     meta: {
