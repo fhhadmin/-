@@ -101,16 +101,22 @@ export default [
       }
     ]
   },
-  // {
-  //   path: '/storeManagement',
-  //   name: 'storeManagement',
-  //   meta: {
-  //     // access: ['yonghu_g'],
-  //     icon: '_gongren',
-  //     title: '仓库管理'
-  //   },
-  //   component: () => import('@/view/storeManagement/storeManagement.vue')
-  // },
+  {
+    path: '/storeManagement',
+    name: 'storeManagement',
+    component: Main,
+    children: [
+      {
+        path: 'storeManage',
+        name: 'storeManage',
+        meta:{
+          icon: '_gongren',
+          title: '仓库管理'
+        },
+        component: () => import('@/view/storeManagement.vue')
+      }
+    ]
+  },
   {
     path: '/401',
     name: 'error_401',
