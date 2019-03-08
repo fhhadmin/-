@@ -25,8 +25,8 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://',
-    pro: 'http://',
-    qiniuBaseUrl: 'http://'
+    dev: 'http://192.168.31.19:80',
+    pro: 'http://192.168.31.19:80',
+    qiniuBaseUrl: 'http://192.168.31.19'
   }
 }
