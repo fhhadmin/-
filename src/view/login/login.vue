@@ -4,7 +4,7 @@
   <template>
     <div class="login" @keydown.enter="handleLogin">
       <div class="login-con">
-        <Card icon="log-in" title="欢迎tt登录" :bordered="false">
+        <Card icon="log-in" title="欢迎登录" :bordered="false">
           <div class="form-con">
             <login-form @on-success-valid="handleSubmit"></login-form>
             <div class="register">
@@ -13,7 +13,7 @@
                 <!--| <span @click="passwordForget">忘记密码?</span>-->
               <!--</div>-->
             </div>
-            <p class="login-tip">请输入户名且密码</p>
+            <p class="login-tip">请输入户名和密码</p>
           </div>
         </Card>
       </div>

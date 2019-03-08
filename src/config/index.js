@@ -25,8 +25,13 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://',
-    pro: 'http://',
-    qiniuBaseUrl: 'http://'
+    /** 正式服务器 */
+    // dev: 'https://lzdxservice.sandianke.com/',
+    // pro: 'https://lzdxservice.sandianke.com/',
+    // qiniuUrl: 'https://lzdxservice.sandianke.com/'
+    /** 测试服务器 */
+    // dev: 'http://192.168.31.158:8040/',
+    // pro: 'http://192.168.31.158:8040/',
+    // qiniuUrl: 'https://lzdxservice.sandianke.com/'
   }
 }

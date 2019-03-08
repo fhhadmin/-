@@ -101,6 +101,28 @@ export default [
       }
     ]
   },
+  {
+    path: '/scheduleList',
+    name: 'scheduleList',
+    meta: {
+      // access: ['yonghu_g'],
+      icon: '_gongren',
+      title: '材料计划'
+    },
+    component: Main,
+    children: [
+      {
+        path: '/schedule',
+        name: 'schedule',
+        meta: {
+          icon: '_gongren',
+          title: '材料计划表'
+        },
+        component: () => import('@/view/schedule/schedule.vue')
+      },
+    ]
+  },
+
   // {
   //   path: '/storeManagement',
   //   name: 'storeManagement',
