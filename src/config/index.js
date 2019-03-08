@@ -30,8 +30,8 @@ export default {
     // pro: 'https://lzdxservice.sandianke.com/',
     // qiniuUrl: 'https://lzdxservice.sandianke.com/'
     /** 测试服务器 */
-    // dev: 'http://192.168.31.158:8040/',
-    // pro: 'http://192.168.31.158:8040/',
-    // qiniuUrl: 'https://lzdxservice.sandianke.com/'
+    dev: 'http://192.168.31.19:80',
+    pro: 'http://192.168.31.19:80',
+    qiniuBaseUrl: 'http://192.168.31.19'
   }
 }
