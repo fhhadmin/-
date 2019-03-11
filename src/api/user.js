@@ -5,7 +5,7 @@ export const login = ({ userName, password }) => {
   params.append('accountName', userName)
   params.append('accountPass', password)
   return axios.request({
-    url: 'login',
+    url: '/acount/login',
     data: params,
     method: 'post'
   })
@@ -13,7 +13,7 @@ export const login = ({ userName, password }) => {
 
 export const getUserInfo = (token) => {
   return axios.request({
-    url: 'getAccountInfo',
+    url: '/getAccountInfo',
     params: {
       token
     },
