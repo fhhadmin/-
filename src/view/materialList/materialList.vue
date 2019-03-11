@@ -1,59 +1,65 @@
 <template>
   <div>
-    <Button @click="importMaterial">导入施工材料</Button>
+    <editableTables :columns="columns" :value="dataList" :selectShow="false" :pageTotal="totalPages" :currentPage="currentPage" @getPage="getPageNum" :isLoading="isLoading">
+      <Select v-model="selectProject" placeholder="选择已导入的项目" style="width:200px;">
+        <Option v-for="item in projectList" :value="item.pId+' '+item.pName" :key="item.pId">{{item.pName}}</Option>
+      </Select>
+      <Button type="info" @click="importMaterial">导入施工材料</Button>
+      <Button type="success">导出</Button>
+    </editableTables>
     <Modal
       v-model="importExcel"
       title="施工材料导入"
       :closable = "false"
       @on-ok="importOk"
       @on-cancel="importCancel">
-      <Button style="margin:20px" type="info" @click="importProject">导入现有项目</Button>
-      <Button style="margin:20px" type="info" @click="importNewProject">导入新建项目</Button>
-        <Upload
-          action="//192.168.31.19:80/admin/proMaterial/importMaterial"
-          :data="{
-            pName:'file'
-          }"
-          :on-success="handleSuccess"
-          >
-        <Button icon="ios-cloud-upload-outline" style="margin:20px" type="info">上传材料表</Button>
+      <Button style="margin:20px" type="info" @click="importProject" v-if="isShow.showProject">导入已有项目</Button>
+      <Button style="margin:20px" type="info" @click="importNewProject" v-if="isShow.showProject">导入新建项目</Button>
+      <Select v-model="existingProject" v-if="isShow.isExisting" style="width:200px;margin-left:20px;">
+        <Option v-for="item in projectList" :value="item.pId" :key="item.pId">{{item.pName}}</Option>
+      </Select>
+      <Button v-if="isShow.isExisting" @click="selectReturn">返回</Button>
+      <Input placeholder="请输入项目名称" v-model="projectName" v-if="isShow.isNew" style="width:200px;margin-left:20px;" />
+      <Button v-if="isShow.isNew" @click="isReturn">返回</Button>
+      <Upload
+        action="//192.168.31.19:80/admin/proMaterial/importMaterial"
+        :data="{
+          pId: this.pId,
+          pName: this.pName
+        }"
+        :on-success="handleSuccess"
+        >
+      <Button icon="ios-cloud-upload-outline" style="margin:20px" type="info">上传材料表</Button>
     </Upload>
     </Modal>
-    <Modal
-      v-model="addPlan"
-      title="添加材料计划"
-      :closable = "false"
-      @on-ok="addOk"
-      @on-cancel="addCancel">
-      <template v-for="(item,index) in list">
-        <Tag checkable @on-change="isClick(item)" color="primary" :name="item" :checked="checked">{{item}}</Tag>
-      </template>
-      <div style="margin-top:100px">
-        <template v-for="(item,index) in tagList">
-          <Tag>{{item}}</Tag>
-        </template>
-      </div>
-    </Modal>
-
-
-    <editableTables :columns="columns" :value="dataList" :pageTotal="totalPages" @getPage="getPageNum" @on-select="selectRow">
-      <Button @click="makePlan" type="primary">添加计划</Button>
-      <Button type="info">导出</Button>
-    </editableTables>
   </div>
 </template>
 <script>
 import index from '@/config/index'
-import { importMaterial } from '@/api/materialList/materialList'
+import { importMaterial, getPageList, getProjectList } from '@/api/materialList/materialList'
 import editableTables from '_c/editableTables/editableTables'
 export default {
   data(){
     return {
+      pageNum: 1,
+      currentPage: 1,
       totalPages: 1,
-      isEditable: true,
+      isLoading: false,
+      selectProject: '',
+      pId: '',
+      pName: '',
+      id: '',
+      name: '',
+      isShow: {
+        showProject: true,
+        isExisting: false,
+        isNew: false
+      },
       importExcel: false,
-      addPlan: false,
       file: "",
+      existingProject: '',
+      projectName: '',
+      projectList: [],
       columns: [
         {
           title: '序号',
@@ -62,22 +68,22 @@ export default {
         },
         {
           title: '名称',
-          key: 'name',
+          key: 'materName',
           align: 'center'
         },
         {
           title: '规格/型号',
-          key: 'precification',
+          key: 'materModel',
           align: 'center'
         },
         {
           title: '数量',
-          key: 'number',
+          key: 'materNum',
           align: 'center'
         },
         {
           title: '单位',
-          key: 'unit',
+          key: 'materUnit',
           align: 'center'
         },
         {
@@ -104,41 +110,15 @@ export default {
           }
         }
       ],
-      dataList: [
-        {
-          name: '水泥',
-          precification: '20kg/袋',
-          planNum: 0,
-          number: 1000,
-          unit: '吨'
-        },
-        {
-          name: '钢筋',
-          precification: '20/捆',
-          planNum: 0,
-          number: 10000,
-          unit: '根'
-        },
-        {
-          name: '水泥',
-          precification: '20kg/袋',
-          planNum: 0,
-          number: 1000,
-          unit: '吨'
-        }
-      ],
-      list: ['钢筋','水泥','砖头','沙子','石头'],
-      checked: false,
-      marterials: [],
-      tagList: []
+      dataList: [],
     }
   },
   components: {
     editableTables
   },
   methods: {
-    getPageNum(){
-
+    getPageNum(e){
+      this.currentPage = e
     },
     selectRow(){
 
@@ -151,45 +131,80 @@ export default {
     },
     importMaterial(){
       this.importExcel = true
+      this.isShow.showProject = true
+      this.isShow.isExisting = false
+      this.isShow.isNew = false
     },
     importProject(){
-
+      this.isShow.showProject = false
+      this.isShow.isExisting = true
     },
     importNewProject(){
-
+      this.isShow.showProject = false
+      this.isShow.isNew = true
+    },
+    selectReturn() {
+      this.isShow.showProject = true
+      this.isShow.isExisting = false
+      this.existingProject = ''
+    },
+    isReturn() {
+      this.isShow.showProject = true
+      this.isShow.isNew = false
+      this.projectName = ''
     },
     //上传成功
-    handleSuccess(res, file, fileList){
-
-    },
-    addOk() {
-
-    },
-    addCancel(){
-
-    },
-    //添加计划
-    makePlan(){
-      this.addPlan = true
-    },
-    isClick(e){
-      if (this.tagList.length === 0) {
-        this.tagList.push(e)
-      }else{
-        if(this.tagList.indexOf(e) === -1) {
-            this.tagList.push(e)
-        }else{
-          this.tagList.splice(this.tagList.indexOf(e), 1)
-        }
+    handleSuccess(res){
+      if(res.status === 1) {
+        this.$Message.success('上传成功')
       }
+    },
+    // 获取项目列表
+    getProjectList() {
+      this.projectList = []
+      getProjectList(this.pageNum,'100').then(res => {
+        if(res.status === 1) {
+          this.projectList = res.info.data
+        }else{
+          console.log('操作失败')
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 获取项目用料列表
+    getList() {
+      this.isLoading = true
+      this.dataList = []
+      this.list = []
+      getPageList(this.pageNum, this.id).then(res => {
+        this.isLoading = false
+        this.dataList = res.info.data
+        this.totalPages = res.info.pageTotal
+        res.info.data.map(e => {
+          this.list.push(e)
+        })
+      })
     }
   },
   watch: {
-
+    'existingProject'(e){
+      this.pId = e
+    },
+    'projectName'(e) {
+      this.pName = e
+    },
+    'selectProject'(e){
+      this.id = e.trim().split(' ')[0]
+      this.name = e.trim().split(' ')[1]
+      this.getList()
+    }
   },
   mounted(){
     let {baseUrl} = index
     this.file = baseUrl.pro
+
+    this.getProjectList()
   }
 }
 </script>

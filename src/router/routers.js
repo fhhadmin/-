@@ -82,11 +82,6 @@ export default [
   {
     path: '/materialList',
     name: 'materialList',
-    meta: {
-      // access: ['yonghu_g'],
-      icon: '_gongren',
-      title: '材料用料表'
-    },
     component: Main,
     children: [
       {
@@ -95,9 +90,26 @@ export default [
         meta: {
           // access: ['renyuanxinxi_g'],
           icon: '_gongren',
-          title: '施工材料表'
+          title: '项目用料表'
         },
         component: () => import('@/view/materialList/materialList.vue')
+      }
+    ]
+  },
+  {
+    path: '/projectPlan',
+    name: 'projectPlan',
+    component: Main,
+    children: [
+      {
+        path: 'planList',
+        name: 'planList',
+        meta: {
+          // access: ['renyuanxinxi_g'],
+          icon: '_gongren',
+          title: '项目计划表'
+        },
+        component: () => import('@/view/projectPlan/planList.vue')
       }
     ]
   },

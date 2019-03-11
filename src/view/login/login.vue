@@ -38,18 +38,17 @@ export default {
       'getUserInfo'
     ]),
     handleSubmit ({ userName, password }) {
-      setToken('模拟登陆')
-      this.$router.push({
-        name: 'home'
-      })
-      return
       this.handleLogin({ userName, password }).then(res => {
-        this.getUserInfo().then(res => {
-          this.$Message.success('欢迎登陆')
+        this.$Message.success('欢迎登陆')
           this.$router.push({
             name: 'home'
           })
-        })
+        // this.getUserInfo().then(res => {
+        //   this.$Message.success('欢迎登陆')
+        //   this.$router.push({
+        //     name: 'home'
+        //   })
+        // })
       }).catch(err => {
         this.$Message.error(err)
       })
