@@ -25,8 +25,13 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://192.168.31.19:80/admin',
-    pro: 'http://192.168.31.19:80/admin',
+    /** 正式服务器 */
+    // dev: 'https:',
+    // pro: 'https:',
+    // qiniuUrl: 'https:'
+    /** 测试服务器 */
+    dev: 'http://192.168.31.19:80',
+    pro: 'http://192.168.31.19:80',
     qiniuBaseUrl: 'http://192.168.31.19'
   }
 }
