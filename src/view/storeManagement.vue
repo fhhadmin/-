@@ -60,6 +60,29 @@ export default {
           key: 'amount',
           align: 'center'
         },
+        {
+          title: '操作',
+          key: 'operation',
+          align: 'center',
+          render:(h, params) => {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+
+                },
+                on: {
+                  click: () => {
+                    console.log(params,'......')
+                  }
+                }
+              }, '详情')
+            ])
+          }
+        }
       ],
     }
   },
