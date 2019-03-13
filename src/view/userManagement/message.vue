@@ -23,15 +23,11 @@ export default({
       columns: [
         {
           title: '登录账号',
-          key: 'account'
+          key: 'accountName'
         },
         {
           title: '登录密码',
-          key: 'password'
-        },
-        {
-          title: '昵称',
-          key: 'name'
+          key: 'accountPass'
         },
         {
           title: '操作',
@@ -75,7 +71,6 @@ export default({
   methods: {
     // 添加管理员成功
     addAdminDate (e) {
-      console.log(this.editState)
       // 判断是否是编辑状态
       if (this.editState) {
         e.id = this.daminId
@@ -85,7 +80,7 @@ export default({
           this.$refs.showAddMessage.hideModal()
           this.$refs.showAddMessage.modal_loading = false
         }).catch(err => {
-          this.$Message.error(err.msg)
+          this.$Message.error(err)
           this.$refs.showAddMessage.modal_loading = false
         })
       } else {
@@ -105,7 +100,7 @@ export default({
       this.dataList = []
       AdminQueryUsers().then(res => {
         this.dataList = []
-        this.dataList.push(...res.data)
+        this.dataList.push(...res.info.data)
       }).catch(err => {
         console.log(err.msg)
       })

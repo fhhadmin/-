@@ -40,13 +40,13 @@ class HttpRequest {
       // const { data } = res
       // 判断响应状态
       // 登陆过期
-      if (res.data.code + '' === '-1') {
+      if (res.data.status + '' === '2') {
         setToken('')
         return Promise.reject(res.data)
       }
       // 错误状态
-      if (res.data.code + '' === '1') {
-        return Promise.reject(res.data)
+      if (res.data.status + '' === '500') {
+        return Promise.reject(res.data.info)
       }
       return res.data
     }, error => {

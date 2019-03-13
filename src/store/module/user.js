@@ -84,10 +84,10 @@ export default {
           // id
           // commit('setUserId', data.accountId)
           // 权限
-          commit('setAccess', data)
+          commit('setAccess', res.msg)
           commit('setShopName', res.msg.accountInfo)
           // commit('homeName', res.msg.initialPage)
-          commit('setToken', res.msg.initialPage)
+          commit('setToken', res.msg)
           resolve(res.msg)
         }).catch(err => {
           reject(err.msg)

@@ -84,7 +84,6 @@ export const getMenuByRouter = (list, access) => {
  * @returns {Array}
  */
 export const getBreadCrumbList = (route, homeRoute) => {
-  console.log(homeRoute)
   let homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
   let routeMetched = route.matched
   if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
@@ -344,7 +343,6 @@ export const canTurnTo = (name, access, routes) => {
     return res
   }
   const canTurnToNames = getHasAccessRouteNames(routes)
-
   return canTurnToNames.indexOf(name) > -1
 }
 

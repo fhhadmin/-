@@ -14,10 +14,6 @@
           <span>密码：</span>
           <Input v-model="password" placeholder="登录密码" style="width: 300px" />
         </div>
-        <div style="margin-bottom: 10px">
-          <span>昵称：</span>
-          <Input v-model="name" placeholder="昵称" style="width: 300px" />
-        </div>
         <div>
           <p style="font-weight: 700;">权限分配：</p>
           <roleTableTree :id="newUserId" @selectUp="selectUp"></roleTableTree>
@@ -51,11 +47,14 @@ export default({
   },
   methods: {
     selectUp (e) {
+      console.log(e)
       this.authority = e
     },
     // 确定
     confirm () {
       this.modal_loading = true
+      console.log(this.authority)
+      console.log(JSON.stringify(this.authority))
       let dataValue = {
         account: this.account,
         password: this.password,

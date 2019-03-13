@@ -39,16 +39,12 @@ export default {
     ]),
     handleSubmit ({ userName, password }) {
       this.handleLogin({ userName, password }).then(res => {
-        this.$Message.success('欢迎登陆')
+        this.getUserInfo().then(res => {
+          this.$Message.success('欢迎登陆')
           this.$router.push({
             name: 'home'
           })
-        // this.getUserInfo().then(res => {
-        //   this.$Message.success('欢迎登陆')
-        //   this.$router.push({
-        //     name: 'home'
-        //   })
-        // })
+        })
       }).catch(err => {
         this.$Message.error(err)
       })
