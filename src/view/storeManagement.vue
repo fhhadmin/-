@@ -2,8 +2,8 @@
   <div>
     <Row>
       <Col span="3">
-        <Select style="width:200px" placeholder="请选择材料名称">
-          <Option></Option>
+        <Select  v-mode="materName" style="width:200px" placeholder="请选择材料名称">
+          <Option :value=""></Option>
         </Select>
       </Col>
       <Col span="3">
@@ -32,6 +32,9 @@ export default {
   },
   data() {
     return {
+      // 材料名称
+      materName:'',
+      // 导入文件路径
       file: '',
       loading: false,
       buttonSize: 'large',
@@ -76,9 +79,11 @@ export default {
     }
   },
   methods: {
+    //文件导入成功后的处理
     handleSuccess (res) {
       //
     },
+    // 获取材料列表
     getList (data) {
       this.loading = true
       //接口
