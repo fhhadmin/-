@@ -35,6 +35,11 @@
       <div style="margin-left:200px;">
         <div style="border: 1px solid #e5e5e5;width:90%;height: 400px;margin-top:20px;">
           <div style="margin-top: -10px;margin-left:20px;font-size:16px;">待选材料列表</div>
+          <div style="margin:100px;" v-if="isLoad">
+            <div style="margin-top:150px;margin-left:120px;"><Spin size="small"></Spin></div>
+            <Spin style="margin-top:-15px;margin-left:300px;"></Spin>
+            <Spin style="margin-top:-25px;margin-left:550px;" size="large"></Spin>
+          </div>
           <div style="margin:20px;">
             <template v-for="(item,index) in list">
               <Tag checkable @on-change="isClick(item.materName+item.materModel+ ' ' +item.mid)" color="primary" :name="item.materName" :checked="checked">{{item.materName}}({{item.materModel}})</Tag>
@@ -51,9 +56,9 @@
           <div style="float:right;margin-top:180px;"><Button type="info" @click="generateTable">生成用料表</Button></div>
         </div>
         <div style="margin-top:20px;" v-if="!isTable">
-          <virtual-list :size="40" :remain="8">
+          <!-- <virtual-list :size="40" :remain="8"> -->
             <editableTables :columns="planMaterial" :value="planMaterialList" @input="getInput" :selectShow="false" :showPage="false" :isLoading="isLoading"></editableTables>
-          </virtual-list>
+          <!-- </virtual-list> -->
         </div>
       </div>
       <div slot="footer">
@@ -67,7 +72,9 @@
       :mask-closable="false"
       :width="800">
       <virtual-list :size="40" :remain="8">
-        <editableTables :columns="planMaterial" :value="materialQueryList" :selectShow="false" :showPage="false"></editableTables>
+        <editableTables :columns="planMaterial" :value="materialQueryList" :selectShow="false" :showPage="false">
+          <Button type="primary" style="margin-left:708px">导出</Button>
+        </editableTables>
       </virtual-list>
     </Modal>
   </div>
@@ -92,11 +99,12 @@ export default {
       // addPlan: false,
       addMaterial: false,
       checked: false,
+      isLoad: false,
       // selectProject: '',
       // planTime: '',
       // startTime: '',
       proName: '',
-      // planNum: '',
+      planNum: '',
       pId: '',
       proId: '',
       planId: '',
@@ -137,10 +145,12 @@ export default {
                 },
                 on:{
                   click:() => {
+                    this.isLoad = true
                     this.addMaterial = true
                     this.tagList = []
                     this.tagIdLIst = []
                     this.isTable = true
+                    this.getMaterialList()
                   }
                 }
               }, '添加材料'),
@@ -193,7 +203,7 @@ export default {
         {
           title: '计划数量',
           key: 'planNum',
-          editable: 'true',
+          editable: true,
           align: 'center'
         }
       ],
@@ -236,7 +246,7 @@ export default {
       getProjectList( 1, '100').then(res => {
         if(res.status === 1) {
           this.projectList = res.info.data
-          this.proName = this.projectList[0].pId
+          this.proName = this.projectList.length === 0 ? '' : this.projectList[0].pId
         }else{
           console.log('操作失败')
         }
@@ -245,18 +255,18 @@ export default {
       })
     },
     // 添加项目计划
-    addPlanOk() {
-      this.planTime = this.planTime.Format('yyyy-MM-dd')
-      this.startTime = this.startTime.Format('yyyy-MM-dd')
-      addProPlan(this.pId, this.planTime, this.startTime, this.planNum).then(res => {
-        if(res.info === '操作成功'){
-          this.$Message.success('计划添加成功!')
-          this.getPageList()
-        }else{
-          this.$Message.error('添加失败!')
-        }
-      })
-    },
+    // addPlanOk() {
+    //   this.planTime = this.planTime.Format('yyyy-MM-dd')
+    //   this.startTime = this.startTime.Format('yyyy-MM-dd')
+    //   addProPlan(this.pId, this.planTime, this.startTime, this.planNum).then(res => {
+    //     if(res.info === '操作成功'){
+    //       this.$Message.success('计划添加成功!')
+    //       this.getPageList()
+    //     }else{
+    //       this.$Message.error('添加失败!')
+    //     }
+    //   })
+    // },
     // 查询项目计划列表
     getPageList(){
       this.loading = true
@@ -274,10 +284,17 @@ export default {
     },
     // 查询项目材料列表
     getMaterialList(){
+      this.list = []
       getPageList(1,this.proId).then(res => {
-        res.info.data.map(e => {
-          this.list.push(e)
-        })
+        this.isLoad = false
+        console.log(res,'res')
+        if(res.info === '暂无数据'){
+          this.$Message.error('暂无数据')
+        }else{
+          res.info.data.map(e => {
+            this.list.push(e)
+          })
+        }
       })
     },
     // 生成用料表
@@ -295,8 +312,6 @@ export default {
     // 保存编辑
     getInput(e){
       console.log(e)
-      // return
-      // this.dataListPrimeval = e
       this.planMaterialList = e
     },
   },
@@ -307,6 +322,9 @@ export default {
     'proName'(e) {
       this.proId = e
       this.getPageList()
+    },
+    'planNum'(e) {
+      console.log(e,'eeee')
     }
   },
   mounted() {

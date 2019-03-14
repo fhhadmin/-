@@ -76,7 +76,7 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(res => {
-          const data = res.info
+          // const data = res.info
           // 图片
           commit('setAvator', 'http://qiniu.dnwapp.com/1544149701527.png')
           // 名称

@@ -50,6 +50,7 @@ export default({
                     this.backToNowObj = params.row
                     this.backToNowObj.id = this.backToNowObj.id + '|' + new Date()
                     this.$refs.showAddMessage.showModal(this.backToNowObj)
+                    this.$refs.showAddMessage.isEdit = false
                     this.editState = true
                   }
                 }
