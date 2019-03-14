@@ -5,9 +5,13 @@ import axios from '@/libs/api.request'
  * @param {Object} data
  */
 export const adminUserAdd = (data) => {
+  let params = new URLSearchParams()
+  params.append('accountName', data.account)
+  params.append('accountPass', data.password)
+  params.append('obj', data.permission)
   return axios.request({
-    url: '/admin-user/add',
-    data,
+    url: '/account/add',
+    data: params,
     method: 'post'
   })
 }
@@ -17,19 +21,22 @@ export const adminUserAdd = (data) => {
  */
 export const AdminQueryUsers = () => {
   return axios.request({
-    url: '/admin-user/queryUsers',
+    url: '/account/getPageList',
     method: 'get'
   })
 }
 
 /**
- *  后台新增用户
+ *  按id查询用户
  * @param {String} id
  */
 export const queryUserById = (userId) => {
+  let params = new URLSearchParams()
+  params.append('accountId', userId)
   return axios.request({
-    url: '/admin-user/queryUserById?userId=' + userId,
-    method: 'get'
+    url: '/accountMenu/query',
+    data: params,
+    method: 'post'
   })
 }
 
@@ -40,7 +47,7 @@ export const queryUserById = (userId) => {
 export const adminUserUpdate = (data) => {
   console.log(data)
   return axios.request({
-    url: '/admin-user/update',
+    url: '/accountMenu/edit',
     data,
     method: 'post'
   })

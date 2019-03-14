@@ -53,7 +53,7 @@ export default [
           hideInMenu: true,
           notCache: true
         },
-        component: () => import('@/view/single-page/home')
+        component: () => import('@/view/single-page/home/home')
       }
     ]
   },
@@ -61,7 +61,7 @@ export default [
     path: '/userManagement',
     name: 'userManagement',
     meta: {
-      // access: ['yonghu_g'],
+      access: ['用户管理'],
       icon: '_gongren',
       title: '用户管理'
     },
@@ -71,7 +71,7 @@ export default [
         path: 'message',
         name: 'message',
         meta: {
-          // access: ['renyuanxinxi_g'],
+          access: ['权限信息'],
           icon: '_gongren',
           title: '权限信息'
         },
@@ -82,30 +82,50 @@ export default [
   {
     path: '/materialList',
     name: 'materialList',
+    meta: {
+      access: ['项目用料'],
+      icon: '_gongren',
+      title: '项目用料'
+    },
     component: Main,
     children: [
+      // {
+      //   path: 'material',
+      //   name: 'material',
+      //   meta: {
+      //     access: ['项目用料表'],
+      //     icon: '_gongren',
+      //     title: '项目用料表'
+      //   },
+      //   component: () => import('@/view/materialList/materialList.vue')
+      // },
       {
-        path: 'material',
-        name: 'material',
+        path: 'material2',
+        name: 'material2',
         meta: {
-          // access: ['renyuanxinxi_g'],
+          access: ['项目用料表'],
           icon: '_gongren',
           title: '项目用料表'
         },
-        component: () => import('@/view/materialList/materialList.vue')
+        component: () => import('@/view/materialList/materialList2.vue')
       }
     ]
   },
   {
     path: '/projectPlan',
     name: 'projectPlan',
+    meta: {
+      access: ['项目计划'],
+      icon: '_gongren',
+      title: '项目计划'
+    },
     component: Main,
     children: [
       {
         path: 'planList',
         name: 'planList',
         meta: {
-          // access: ['renyuanxinxi_g'],
+          access: ['项目计划表'],
           icon: '_gongren',
           title: '项目计划表'
         },
@@ -116,12 +136,18 @@ export default [
   {
     path: '/storeManagement',
     name: 'storeManagement',
+    meta: {
+      access: ['仓库'],
+      icon: '_gongren',
+      title: '仓库'
+    },
     component: Main,
     children: [
       {
         path: 'storeManage',
         name: 'storeManage',
         meta:{
+          access: ['仓库管理'],
           icon: '_gongren',
           title: '仓库管理'
         },

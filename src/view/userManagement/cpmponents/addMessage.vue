@@ -6,17 +6,13 @@
         title="添加人员基本信息"
         class="authority"
       >
-        <div style="margin-bottom: 5px">
+        <div style="margin-bottom: 5px" v-if="isEdit">
           <span>账号：</span>
           <Input v-model="account" placeholder="登录账号" style="width: 300px" />
         </div>
-        <div style="margin-bottom: 5px">
+        <div style="margin-bottom: 5px" v-if="isEdit">
           <span>密码：</span>
           <Input v-model="password" placeholder="登录密码" style="width: 300px" />
-        </div>
-        <div style="margin-bottom: 10px">
-          <span>昵称：</span>
-          <Input v-model="name" placeholder="昵称" style="width: 300px" />
         </div>
         <div>
           <p style="font-weight: 700;">权限分配：</p>
@@ -43,7 +39,8 @@ export default({
       name: '',
       authority: '',
       modal_loading: false,
-      newUserId: ''
+      newUserId: '',
+      isEdit: true
     }
   },
   props: {
@@ -51,11 +48,14 @@ export default({
   },
   methods: {
     selectUp (e) {
+      console.log(e)
       this.authority = e
     },
     // 确定
     confirm () {
       this.modal_loading = true
+      console.log(this.authority)
+      console.log(JSON.stringify(this.authority))
       let dataValue = {
         account: this.account,
         password: this.password,
@@ -69,6 +69,7 @@ export default({
       this.hideModal()
     },
     showModal (dataObj) {
+      this.isEdit = true
       this.modal = true
       this.modal_loading = false
       this.account = ''

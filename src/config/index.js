@@ -30,8 +30,8 @@ export default {
     // pro: 'https:',
     // qiniuUrl: 'https:'
     /** 测试服务器 */
-    dev: 'http://192.168.31.19:80',
-    pro: 'http://192.168.31.19:80',
+    dev: 'http://192.168.31.19:80/admin',
+    pro: 'http://192.168.31.19:80/admin',
     qiniuBaseUrl: 'http://192.168.31.19'
   }
 }
