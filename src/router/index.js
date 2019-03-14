@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
       user.access = store.state.user.access
       console.log(store.state.user.access)
       if (canTurnTo(to.name, user.access, routes)) next() // 有权限，可访问
-      else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
+      // else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
     })
   }
 })

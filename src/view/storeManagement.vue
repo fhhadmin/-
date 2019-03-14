@@ -1,12 +1,24 @@
 <template>
   <div>
-    <Upload
-      action=""
-      :on-success="handleSuccess">
-        <Button icon="ios-cloud-upload-outline" type="primary">导入仓库表</Button>
-    </Upload>
+    <Row>
+      <Col span="3">
+        <Select style="width:200px" placeholder="请选择材料名称">
+          <Option></Option>
+        </Select>
+      </Col>
+      <Col span="3">
+        <Upload
+          action=""
+          :on-success="handleSuccess">
+            <Button icon="ios-cloud-upload-outline" type="primary">导入仓库表</Button>
+        </Upload>
+      </Col>
+      <Col span="18"></Col>
+    </Row>
     <div>
-      <editable-tables :columns="columns" v-model="dataList" :selectShow="selectShow" :pageTotal='pageTotal' @getPage='getPageNum' :isLoading="loading"></editable-tables>
+      <editable-tables :columns="columns" v-model="dataList" :selectShow="selectShow" :pageTotal='pageTotal' @getPage='getPageNum' :isLoading="loading">
+
+      </editable-tables>
     </div>
   </div>
 </template>
@@ -60,29 +72,6 @@ export default {
           key: 'amount',
           align: 'center'
         },
-        {
-          title: '操作',
-          key: 'operation',
-          align: 'center',
-          render:(h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-
-                },
-                on: {
-                  click: () => {
-                    console.log(params,'......')
-                  }
-                }
-              }, '详情')
-            ])
-          }
-        }
       ],
     }
   },
