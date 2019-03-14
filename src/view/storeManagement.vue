@@ -1,12 +1,24 @@
 <template>
   <div>
-    <Upload
-      action=""
-      :on-success="handleSuccess">
-        <Button icon="ios-cloud-upload-outline" type="primary">导入仓库表</Button>
-    </Upload>
+    <Row>
+      <Col span="3">
+        <Select  v-mode="materName" style="width:200px" placeholder="请选择材料名称">
+          <Option :value=""></Option>
+        </Select>
+      </Col>
+      <Col span="3">
+        <Upload
+          action=""
+          :on-success="handleSuccess">
+            <Button icon="ios-cloud-upload-outline" type="primary">导入仓库表</Button>
+        </Upload>
+      </Col>
+      <Col span="18"></Col>
+    </Row>
     <div>
-      <editable-tables :columns="columns" v-model="dataList" :selectShow="selectShow" :pageTotal='pageTotal' @getPage='getPageNum' :isLoading="loading"></editable-tables>
+      <editable-tables :columns="columns" v-model="dataList" :selectShow="selectShow" :pageTotal='pageTotal' @getPage='getPageNum' :isLoading="loading">
+
+      </editable-tables>
     </div>
   </div>
 </template>
@@ -20,6 +32,9 @@ export default {
   },
   data() {
     return {
+      // 材料名称
+      materName:'',
+      // 导入文件路径
       file: '',
       loading: false,
       buttonSize: 'large',
@@ -64,9 +79,11 @@ export default {
     }
   },
   methods: {
+    //文件导入成功后的处理
     handleSuccess (res) {
       //
     },
+    // 获取材料列表
     getList (data) {
       this.loading = true
       //接口
