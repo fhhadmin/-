@@ -1,28 +1,21 @@
 <template>
   <div>
-    <Row>
-      <Col span="3">
-        <Select  v-mode="materName" style="width:200px" placeholder="请选择材料名称">
-          <Option :value=""></Option>
-        </Select>
-      </Col>
-      <Col span="3">
-        <Upload
-          action=""
-          :on-success="handleSuccess">
-            <Button icon="ios-cloud-upload-outline" type="primary">导入仓库表</Button>
-        </Upload>
-      </Col>
-      <Col span="18"></Col>
-    </Row>
+    <Upload action="" :on-success="handleSuccess">
+        <Button type="primary">导入仓库表</Button>
+    </Upload>
     <div>
-      <editable-tables :columns="columns" v-model="dataList" :selectShow="selectShow" :pageTotal='pageTotal' @getPage='getPageNum' :isLoading="loading">
-
+      <editable-tables
+          :columns="columns"
+          v-model="dataList"
+          :selectShow="selectShow"
+          :pageTotal='pageTotal'
+          @getPage='getPageNum'
+          :isLoading="loading">
+          <Input placeholder="请输入材料名称" style="width:200px;" v-model="materName"/><Button icon="ios-search" @click="searchMater">搜索</Button>
       </editable-tables>
     </div>
   </div>
 </template>
-
 <script>
 import editableTables from '_c/editableTables'
 import index from '@/config/index.js'
@@ -33,7 +26,7 @@ export default {
   data() {
     return {
       // 材料名称
-      materName:'',
+      materName: '',
       // 导入文件路径
       file: '',
       loading: false,
@@ -44,6 +37,18 @@ export default {
       dataList:[
         {
           name: '水泥',
+          standard: '',
+          unit: '吨',
+          amount: 100
+        },
+        {
+          name: '钢筋',
+          standard: '',
+          unit: '吨',
+          amount: 200
+        },
+        {
+          name: '沙子',
           standard: '',
           unit: '吨',
           amount: 300
@@ -84,21 +89,32 @@ export default {
       //
     },
     // 获取材料列表
-    getList (data) {
+    getMaterList (data) {
       this.loading = true
       //接口
+      // this.materName = this.getMaterList === 0 ? '': this.getMaterList[0]
     },
     getPageNum (e) {
       // console.log(e)
       this.currentPage = e
       this.getList({"pageNum": this.currentPage, "pageSize": 10})
+    },
+    searchMater() {
+      if (this.materName !=='') {
+        console.log(this.materName,'name.....')
+      } else {
+
+      }
+
     }
   },
   mounted() {
     // console.log(index,'index....')
      let {baseUrl} = index
      this.file = baseUrl.pro
+    //  this.getMaterList()
   }
+
 }
 </script>
 <style>
