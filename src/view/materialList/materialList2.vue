@@ -37,6 +37,17 @@
       v-model="addProPlan"
       :mask-closable="false"
       title="添加项目计划">
+      <div style="margin: 20px; color:#919191;">
+        <Tooltip>
+          <span>已成功添加{{this.length}}个计划</span>
+          <div slot="content">
+            <span>计划时间</span>
+            <div v-for="item in planGroup">
+              <p>{{item.planTime}}</p>
+            </div>
+          </div>
+        </Tooltip>
+      </div>
       <div style="margin:20px;">
         <!-- <span>计划时间: </span><DatePicker type="daterange" v-model="planTime" placeholder="选择计划执行时间段" style="width: 200px;margin-right:20px;"></DatePicker> -->
         <span>计划时间: </span><DatePicker type="date" v-model="planTime" placeholder="选择计划执行时间段" style="width: 200px;margin-right:20px;"></DatePicker>
@@ -62,6 +73,7 @@ import editableTables from '_c/editableTables/editableTables'
 export default {
   data(){
     return {
+      toolTip: '',
       pageNum: 1,
       currentPage: 1,
       totalPages: 1,
@@ -69,6 +81,7 @@ export default {
       loading: false,
       proTable: false,
       addProPlan: false,
+      length: 0,
       pId: '',
       pName: '',
       id: '',
@@ -86,6 +99,7 @@ export default {
       file: "",
       existingProject: '',
       projectName: '',
+      planGroup: [],
       columns: [
         {
           title: '序号',
@@ -120,6 +134,20 @@ export default {
                   click: () => {
                     this.addProPlan = true
                     this.proId = params.row.pId
+                    let planList = {}
+                    this.planGroup = []
+                    this.length = ''
+                    getProPlan(this.proId, 1, 100).then(res => {
+                      console.log(res)
+                      this.length = res.info.data.length
+                      if(res.info.data) {
+                        res.info.data.map(item => {
+                          planList = item
+                          this.planGroup.push(planList)
+                        })
+                      }
+
+                    })
                   }
                 }
               }, '添加计划'),

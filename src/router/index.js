@@ -16,11 +16,7 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   next()
   const token = getToken()
-  if (to.name === 'passwordForget') {
-    next() // 忘记密码
-  } else if (to.name === 'checkIn') {
-    next() // 工地入住
-  } else if (!token && to.name !== LOGIN_PAGE_NAME) {
+  if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({
       name: LOGIN_PAGE_NAME // 跳转到登录页

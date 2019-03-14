@@ -4,28 +4,7 @@
       <Select v-model="proName" placeholder="选择项目" style="width:200px;">
         <Option v-for="item in projectList" :value="item.pId" :key="item.pId">{{item.pName}}</Option>
       </Select>
-      <!-- <Button @click="makePlan" type="info">添加计划</Button> -->
     </editableTables>
-    <!-- <Modal
-      v-model="addPlan"
-      title="添加项目计划"
-      @on-ok="addPlanOk">
-      <div style="margin:20px;">
-        <span>项目名称: </span>
-        <Select v-model="selectProject" placeholder="选择项目" style="width:200px;">
-          <Option v-for="item in projectList" :value="item.pId" :key="item.pId">{{item.pName}}</Option>
-        </Select>
-      </div>
-      <div style="margin:20px;">
-        <span>计划时间: </span><DatePicker type="date" v-model="planTime" placeholder="选择计划执行时间段" style="width: 200px;margin-right:20px;"></DatePicker>
-      </div>
-      <div style="margin:20px;">
-        <span>进场时间: </span><DatePicker type="date" v-model="startTime" placeholder="选择进场时间" style="width: 200px;margin-right:20px;"></DatePicker>
-      </div>
-      <div style="margin:20px;">
-        <span>编 号: </span><Input v-model="planNum" placeholder="请输入计划编号" style="width:200px;" />
-      </div>
-    </Modal> -->
     <Modal
       v-model="addMaterial"
       title="添加材料计划"
@@ -55,7 +34,7 @@
           </div>
           <div style="float:right;margin-top:180px;"><Button type="info" @click="generateTable">生成用料表</Button></div>
         </div>
-        <div style="margin-top:20px;" v-if="!isTable">
+        <div style="margin-top:20px;" v-else>
           <!-- <virtual-list :size="40" :remain="8"> -->
             <editableTables :columns="planMaterial" :value="planMaterialList" @input="getInput" :selectShow="false" :showPage="false" :isLoading="isLoading"></editableTables>
           <!-- </virtual-list> -->
@@ -72,7 +51,7 @@
       :mask-closable="false"
       :width="800">
       <virtual-list :size="40" :remain="8">
-        <editableTables :columns="planMaterial" :value="materialQueryList" :selectShow="false" :showPage="false">
+        <editableTables :columns="materQueryList" :pageTotal="totalPage" :value="materialQueryList" :selectShow="false" @getPage="getPageNum" :isLoading="materLoading">
           <Button type="primary" style="margin-left:708px">导出</Button>
         </editableTables>
       </virtual-list>
@@ -84,7 +63,7 @@
 import virtualList from 'vue-virtual-scroll-list'
 import editableTables from '_c/editableTables/editableTables'
 import { getProjectList, getPageList } from '@/api/materialList/materialList'
-import { addProPlan, getProPlan, materialQuery } from '@/api/projectPlan/planList'
+import { addProPlan, getProPlan, materialQuery, addMaterial, getPlanMaterial } from '@/api/projectPlan/planList'
 export default {
   components:{
     editableTables,
@@ -93,18 +72,17 @@ export default {
   data(){
     return{
       pageNum: 1,
+      totalPage: 1,
+      pageSize: 10,
       loading: false,
       isLoading: false,
       materQuery: false,
-      // addPlan: false,
       addMaterial: false,
       checked: false,
       isLoad: false,
-      // selectProject: '',
-      // planTime: '',
-      // startTime: '',
+      materLoading: false,
       proName: '',
-      planNum: '',
+      nid: '',
       pId: '',
       proId: '',
       planId: '',
@@ -113,6 +91,7 @@ export default {
       list: [],
       tagList: [],
       tagIdLIst: [],
+      materList: [],
       columns: [
         {
           title: '计划编号',
@@ -149,6 +128,7 @@ export default {
                     this.addMaterial = true
                     this.tagList = []
                     this.tagIdLIst = []
+                    this.nid = params.row.nid
                     this.isTable = true
                     this.getMaterialList()
                   }
@@ -166,6 +146,8 @@ export default {
                   click:() => {
                     this.materQuery = true
                     this.planId = params.row.nid
+                    this.materLoading = true
+                    this.getMaterialQuery()
                   }
                 }
               }, '查看'),
@@ -208,24 +190,66 @@ export default {
         }
       ],
       planMaterialList: [],
+      materQueryList: [
+        {
+          title: '序号',
+          type: 'index',
+          align: 'center'
+        },
+        {
+          title: '材料名称',
+          key: 'materName',
+          align: 'center'
+        },
+        {
+          title: '材料规格',
+          key: 'materModel',
+          align: 'center'
+        },
+        {
+          title: '单位',
+          key: 'materUnit',
+          align: 'center'
+        },
+        {
+          title: "项目总量",
+          key: 'materNum',
+          align: 'center'
+        },
+        {
+          title: '计划数量',
+          key: 'planNum',
+          align: 'center'
+        }
+      ],
       materialQueryList: []
     }
   },
   methods: {
-    //添加计划
-    // makePlan(){
-    //   this.addPlan = true
-    //   this.tagList = []
-    // },
+    getPageNum(e) {
+      this.pageNum = e
+      this.getMaterialQuery()
+    },
     addOk() {
-
+      let planList = {}
+      this.materList = []
+      this.planMaterialList.map(item => {
+        planList.mId = item.mid
+        planList.nId = this.nid
+        planList.planNum = item.planNum
+        this.materList.push(planList)
+      })
+      addMaterial(this.materList).then(res => {
+        if (res.info === '操作成功') {
+          this.addMaterial = false
+        }
+      })
     },
     addCancel(){
       this.addMaterial = false
     },
     isClick(e){
       var idList = []
-      console.log(e.trim().split(' ')[0])
       if (this.tagList.length === 0) {
         this.tagList.push(e.trim().split(' ')[0])
         idList.push(e.trim().split(' ')[1])
@@ -254,19 +278,6 @@ export default {
         console.log(err)
       })
     },
-    // 添加项目计划
-    // addPlanOk() {
-    //   this.planTime = this.planTime.Format('yyyy-MM-dd')
-    //   this.startTime = this.startTime.Format('yyyy-MM-dd')
-    //   addProPlan(this.pId, this.planTime, this.startTime, this.planNum).then(res => {
-    //     if(res.info === '操作成功'){
-    //       this.$Message.success('计划添加成功!')
-    //       this.getPageList()
-    //     }else{
-    //       this.$Message.error('添加失败!')
-    //     }
-    //   })
-    // },
     // 查询项目计划列表
     getPageList(){
       this.loading = true
@@ -287,7 +298,6 @@ export default {
       this.list = []
       getPageList(1,this.proId).then(res => {
         this.isLoad = false
-        console.log(res,'res')
         if(res.info === '暂无数据'){
           this.$Message.error('暂无数据')
         }else{
@@ -301,7 +311,6 @@ export default {
     generateTable(){
       if(this.tagIdLIst.length !== 0) {
         materialQuery(this.tagIdLIst).then(res => {
-          console.log(res)
           this.isTable = false
           this.planMaterialList = res.info
         })
@@ -311,9 +320,26 @@ export default {
     },
     // 保存编辑
     getInput(e){
-      console.log(e)
       this.planMaterialList = e
     },
+    getMaterialQuery(){
+      getPlanMaterial(this.planId, this.pageNum, this.pageSize).then(res => {
+        this.materLoading = false
+        if(res.info.data){
+          let dataList = {}
+          res.info.data.map(item => {
+            console.log(res.info)
+            dataList.materName = item.proMaterialDomain.materName
+            dataList.materModel = item.proMaterialDomain.materModel
+            dataList.materUnit = item.proMaterialDomain.materUnit
+            dataList.materNum = item.proMaterialDomain.materNum
+            dataList.planNum = item.planNum
+            this.pageNum = res.info.pageTotal
+            this.materialQueryList.push(dataList)
+          })
+        }
+      })
+    }
   },
   watch:{
     'selectProject'(e) {
@@ -322,9 +348,6 @@ export default {
     'proName'(e) {
       this.proId = e
       this.getPageList()
-    },
-    'planNum'(e) {
-      console.log(e,'eeee')
     }
   },
   mounted() {
