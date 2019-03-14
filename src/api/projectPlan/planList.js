@@ -51,3 +51,39 @@ export const materialQuery = (mIds) => {
     method: 'post'
   })
 }
+
+/**
+ * 添加计划表材料
+ * data {
+ *  mid, 材料id
+ *  nid,计划id
+ *  planNum 计划数量
+ * }
+ */
+export const addMaterial = (data) => {
+  let params = new URLSearchParams()
+  params.append('object', JSON.stringify(data))
+  return axios.request({
+    url: '/materialPlan/add',
+    data: params,
+    method: 'post'
+  })
+}
+
+/**
+ * 分页查询材料计划表
+ * @param { String } nId 计划id
+ * @param { String } pageNum 当前页数
+ * @param { String } pageSize 每页条数
+ */
+export const getPlanMaterial = (nId, pageNum, pageSize) => {
+  let params = new URLSearchParams()
+  params.append('nId', nId)
+  params.append('pageNum', pageNum)
+  params.append('pageSize', pageSize)
+  return axios.request({
+    url: '/materialPlan/getPageList',
+    data: params,
+    method: 'post'
+  })
+}

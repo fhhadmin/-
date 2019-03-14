@@ -173,7 +173,6 @@ export default {
       this.dataList = []
       this.list = []
       getPageList(this.pageNum, this.id).then(res => {
-        console.log(res)
         this.isLoading = false
         this.dataList = res.info.data
         this.totalPages = res.info.pageTotal

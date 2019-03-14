@@ -13,7 +13,6 @@ const router = new Router({
 const LOGIN_PAGE_NAME = 'login'
 
 router.beforeEach((to, from, next) => {
-  console.log(to.name)
   iView.LoadingBar.start()
   next()
   const token = getToken()
