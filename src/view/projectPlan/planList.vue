@@ -27,16 +27,18 @@
         </div>
         <div style="border: 1px solid #e5e5e5;width: 90%;height: 200px;margin-top:20px;" v-if="isTable">
           <div style="margin-top: -10px;margin-left:20px;font-size:16px;">已选列表</div>
-          <div style="margin:10px">
-            <template v-for="(item,index) in tagList">
-              <Tag color="red">{{item}}</Tag>
-            </template>
-          </div>
-          <div style="float:right;margin-top:180px;"><Button type="info" @click="generateTable">生成用料表</Button></div>
+          <virtual-list :size="40" :remain="8">
+            <div style="margin:10px">
+              <template v-for="(item,index) in tagList">
+                <Tag color="red">{{item}}</Tag>
+              </template>
+            </div>
+          </virtual-list>
+          <div style="position: fixed;bottom:220px;left:85.5%"><Button type="info" @click="generateTable">生成用料表</Button></div>
         </div>
         <div style="margin-top:20px;" v-else>
           <!-- <virtual-list :size="40" :remain="8"> -->
-            <editableTables :columns="planMaterial" :value="planMaterialList" @input="getInput" :selectShow="false" :showPage="false" :isLoading="isLoading"></editableTables>
+            <editableTables :columns="planMaterial" :value="planMaterialList" @input="getInput" :selectShow="false" :showPage="false" :isLoading="isLoading" style="width:90%;"></editableTables>
           <!-- </virtual-list> -->
         </div>
       </div>
@@ -49,7 +51,7 @@
       title="计划材料详情"
       v-model="materQuery"
       :mask-closable="false"
-      :width="800">
+      :width="900">
       <virtual-list :size="40" :remain="8">
         <editableTables :columns="materQueryList" :pageTotal="totalPage" :value="materialQueryList" :selectShow="false" @getPage="getPageNum" :isLoading="materLoading">
           <Button type="primary" style="margin-left:708px">导出</Button>
@@ -241,7 +243,10 @@ export default {
       })
       addMaterial(this.materList).then(res => {
         if (res.info === '操作成功') {
+          console.log(res)
           this.addMaterial = false
+        }else{
+          this.$Message.error('添加失败!')
         }
       })
     },
