@@ -11,7 +11,7 @@
           :pageTotal='pageTotal'
           @getPage='getPageNum'
           :isLoading="loading">
-          <Input placeholder="请输入材料名称" style="width:200px;" v-model="materName"/><Button icon="ios-search" @click="searchMater">搜索</Button>
+          <Input placeholder="请输入材料名称" style="width:200px;" v-model="materName"/><Button icon="ios-search" @click="searchMater" style="height:32px">搜索</Button>
       </editable-tables>
     </div>
   </div>
