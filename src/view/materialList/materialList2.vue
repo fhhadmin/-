@@ -8,14 +8,14 @@
       v-model="importExcel"
       title="施工材料导入"
       :mask-closable="false">
-      <Button style="margin:20px" type="info" @click="importProject" v-if="isShow.showProject">导入已有项目</Button>
-      <Button style="margin:20px" type="info" @click="importNewProject" v-if="isShow.showProject">导入新建项目</Button>
-      <Select v-model="existingProject" v-if="isShow.isExisting" style="width:200px;margin-left:20px;">
+      <Select v-model="importPro" style="margin:20px;width:120px;margin-right:0px;">
+        <Option :value="0">导入新建项目</Option>
+        <Option :value="1">导入已有项目</Option>
+      </Select>
+      <Select v-model="existingProject" v-if="isShow.isExisting" style="width:200px;margin-left:0px;" placeholder="请选择项目">
         <Option v-for="item in projectList" :value="item.pId" :key="item.pId">{{item.pName}}</Option>
       </Select>
-      <Button v-if="isShow.isExisting" @click="selectReturn">返回</Button>
-      <Input placeholder="请输入项目名称" v-model="projectName" v-if="isShow.isNew" style="width:200px;margin-left:20px;" />
-      <Button v-if="isShow.isNew" @click="isReturn">返回</Button>
+      <Input placeholder="请输入项目名称" v-model="projectName" v-if="isShow.isNew" style="width:200px;margin-left:0px;" />
       <Upload
         action="//192.168.31.19:80/admin/proMaterial/importMaterial"
         :data="{
@@ -39,12 +39,16 @@
       title="添加项目计划">
       <div style="margin: 20px; color:#919191;">
         <Tooltip>
-          <span>已成功添加{{this.length}}个计划</span>
-          <div slot="content">
+          <span v-if="this.length < 1">已成功添加 0 个计划</span>
+          <span v-else>已成功添加 {{this.length}} 个计划</span>
+          <div slot="content" v-if="this.length >= 1 ">
             <span>计划时间</span>
             <div v-for="item in planGroup">
               <p>{{item.planTime}}</p>
             </div>
+          </div>
+          <div slot="content" v-else>
+            <span>暂无计划</span>
           </div>
         </Tooltip>
       </div>
@@ -74,6 +78,7 @@ export default {
   data(){
     return {
       toolTip: '',
+      importPro: 1,
       pageNum: 1,
       currentPage: 1,
       totalPages: 1,
@@ -91,7 +96,6 @@ export default {
       planNum: '',
       proId: '',
       isShow: {
-        showProject: true,
         isExisting: false,
         isNew: false
       },
@@ -138,10 +142,9 @@ export default {
                     this.planGroup = []
                     this.length = ''
                     getProPlan(this.proId, 1, 100).then(res => {
-                      console.log(res)
-                      this.length = res.info.data.length
                       if(res.info.data) {
                         res.info.data.map(item => {
+                        this.length = res.info.data.length
                           planList = item
                           this.planGroup.push(planList)
                         })
@@ -224,27 +227,14 @@ export default {
     },
     importMaterial(){
       this.importExcel = true
-      this.isShow.showProject = true
-      this.isShow.isExisting = false
-      this.isShow.isNew = false
-    },
-    importProject(){
-      this.isShow.showProject = false
-      this.isShow.isExisting = true
-    },
-    importNewProject(){
-      this.isShow.showProject = false
-      this.isShow.isNew = true
-    },
-    selectReturn() {
-      this.isShow.showProject = true
-      this.isShow.isExisting = false
-      this.existingProject = ''
-    },
-    isReturn() {
-      this.isShow.showProject = true
-      this.isShow.isNew = false
-      this.projectName = ''
+      if(this.importPro === 0) {
+        this.isShow.isNew = true
+        this.isShow.isExisting = false
+      }else if(this.importPro === 1) {
+        this.isShow.isNew = false
+        this.isShow.isExisting = true
+      }
+
     },
     //上传成功
     handleSuccess(res){
@@ -303,6 +293,16 @@ export default {
     },
     'projectName'(e) {
       this.pName = e
+    },
+    'importPro' (e) {
+      console.log(e)
+      if(e === 0) {
+        this.isShow.isNew = true
+        this.isShow.isExisting = false
+      }else if(e === 1){
+        this.isShow.isExisting = true
+        this.isShow.isNew = false
+      }
     }
   },
   mounted(){
